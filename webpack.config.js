@@ -3,20 +3,16 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
   entry: {
-    index: "./src/index.js",
-    print: "./src/print.js",
+    index: path.join(__dirname, "src", "index.js"),
+  },
+  output: {
+    path: path.resolve(__dirname, "build"),
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: "Output Management",
+      template: path.join(__dirname, "src", "index.html"),
     }),
   ],
-  output: {
-    filename: "[name].bundle.js",
-    path: path.resolve(__dirname, "dist"),
-    clean: true,
-  },
-
   module: {
     rules: [
       {
@@ -28,15 +24,15 @@ module.exports = {
         type: "asset/resource",
       },
       {
-        test: /\.(woff|woff2|eot|ttf|otf)$/i,
-        type: "asset/resource",
+        test: /\.?js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: ["@babel/preset-env", "@babel/preset-react"],
+          },
+        },
       },
     ],
   },
-  optimization: {
-    splitChunks: {
-      chunks: "all",
-    },
-  },
-
 };
